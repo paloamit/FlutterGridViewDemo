@@ -52,5 +52,17 @@ void main() {
       return Response(jsonEncode(response), 200);
     });
     expect(await NewsNetworkManager.fetchNews(mockHTTPClient), isA<List<NewsModel>>());
-  });   
+  }); 
+
+  test('Throws exception when news API is unsuccessful', () async {
+   final mockHTTPClient = MockClient((request) async {
+   final response = {};
+   return Response(jsonEncode(response), 404);
+   });
+   try {
+     await NewsNetworkManager.fetchNews(mockHTTPClient);
+   } catch (e) {
+     expect(e, isA<Exception>());
+     expect(e.toString(), contains('Unable to fetch news data'));
+   }  
 }
